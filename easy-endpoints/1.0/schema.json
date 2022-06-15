@@ -1,0 +1,151 @@
+{
+  "$id": "https://www.byteplug.io/standards/easy-endpoints/1.0/schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "To be written.",
+
+  "type": "object",
+  "properties": {
+    "standard": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "contact": {
+      "$ref": "#/$defs/contact"
+    },
+    "license": {
+      "$ref": "#/$defs/license"
+    },
+    "version": {
+      "type": "string"
+    },
+    "records": {
+      "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/records-properties"
+    },
+    "endpoints": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/root-endpoint"
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/collection-endpoint"
+            },
+            "propertyNames": {
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+            }
+          }
+        ]
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      }
+    }
+  },
+  "required": ["endpoints"],
+  "additionalProperties": false,
+  "$defs": {
+    "contact": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+    "license": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": ["name"],
+      "oneOf": [
+        {
+          "required": ["identifier"]
+        },
+        {
+          "required": ["url"]
+        }
+      ]
+    },
+    "root-endpoint": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
+            }
+          ],
+          "unevaluatedProperties": false
+        },
+        "response": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
+            }
+          ],
+          "unevaluatedProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "collection-endpoint": {
+      "type": "object",
+      "properties": {
+        "operate": {
+          "enum": ["item", "collection"]
+        },
+        "request": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
+            }
+          ],
+          "unevaluatedProperties": false
+        },
+        "response": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
+            }
+          ],
+          "unevaluatedProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": ["operate"]
+    }
+  }
+}
