@@ -1,0 +1,245 @@
+{
+  "$id": "https://www.byteplug.io/standards/document-validator/1.0/schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "To be written.",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "#/$defs/value-type"
+    }
+  ],
+  "unevaluatedProperties": false,
+  "$defs": {
+    "value-type": {
+      "properties": {
+        "type": {
+          "enum": [
+            "flag",
+            "integer",
+            "decimal",
+            "string",
+            "enum",
+            "binary",
+            "list",
+            "tuple",
+            "map",
+            "time",
+            "date",
+            "datetime",
+            "duration"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "flag" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["flag"] },
+              "option": { "type": "boolean" },
+              "default": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "integer" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["integer"] },
+              "minimum": {
+                "$ref": "#/$defs/minimum-maximum-rules"
+              },
+              "maximum": {
+                "$ref": "#/$defs/minimum-maximum-rules"
+              },
+              "option": { "type": "boolean" },
+              "default": { "type": "number" }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "decimal" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["decimal"] },
+              "minimum": {
+                "$ref": "#/$defs/minimum-maximum-rules"
+              },
+              "maximum": {
+                "$ref": "#/$defs/minimum-maximum-rules"
+              },
+              "option": { "type": "boolean" },
+              "default": { "type": "number" }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "string" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["string"] },
+              "length": { "$ref": "#/$defs/length-rules" },
+              "pattern": { "type": "string" },
+              "option": { "type": "boolean" },
+              "default": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "enum" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["enum"] },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z]+(-[a-z]+)*$"
+                }
+              },
+              "default": {
+                "type": "string",
+                "pattern": "^[a-z]+(-[a-z]+)*$"
+              },
+              "option": { "type": "boolean" }
+            },
+            "required": ["type", "values", "default"],
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "binary" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["binary"] },
+              "option": { "type": "boolean" },
+              "default": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "list" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["list"] },
+              "value": { "$ref": "#/$defs/value-type" },
+              "length": { "$ref": "#/$defs/length-rules" },
+              "option": { "type": "boolean" }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "tuple" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["tuple"] },
+              "values": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/value-type"
+                }
+              },
+              "option": { "type": "boolean" }
+            },
+            "required": ["type", "values"],
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "map" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["map"] },
+              "fields": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "$ref": "#/$defs/value-type",
+                  "unevaluatedProperties": false
+                },
+                "propertyNames": {
+                  "pattern": "^[a-z]+(-[a-z]+)*$"
+                }
+              },
+              "option": { "type": "boolean" },
+              "default": { "type": "boolean" }
+            },
+            "required": ["type", "fields"],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "minimum-maximum-rules": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "exclusive": { "type": "boolean" },
+            "value": { "type": "number" }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "length-rules": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "number" ,
+              "minimum": 0
+            },
+            "maximum": {
+              "type": "number" ,
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
