@@ -15,6 +15,8 @@ import pytest
 #   greater than the minimum value (if specified).
 # - For the enum type, can we restrict the default value to be one in the
 #   values list.
+# - Should we test validity of document with the 'records' field and no actual
+#   "root element".
 
 VALID_NAMES = [
     "foobar",
@@ -102,7 +104,7 @@ def test_flag_type():
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: flag\nfoo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 def test_integer_type():
     # test minimal document
@@ -157,7 +159,7 @@ maximum:
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: integer\nfoo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 def test_decimal_type():
     # test minimal document
@@ -212,7 +214,7 @@ maximum:
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: decimal\nfoo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 def test_string_type():
     # test minimal document
@@ -263,11 +265,11 @@ default: foo
 
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: enum")
-    assert e_info.value.message == "'values' is a required property"
+    # assert e_info.value.message == "'values' is a required property"
 
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: enum\nvalues: [foo, bar, quz]")
-    assert e_info.value.message == "'default' is a required property"
+    # assert e_info.value.message == "'default' is a required property"
 
     validate_document(minimal_document)
 
@@ -302,7 +304,7 @@ default: {value}
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 # def test_binary_type():
 #     # test minimal document
@@ -317,7 +319,7 @@ value:
 """
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: list")
-    assert e_info.value.message == "'value' is a required property"
+    # assert e_info.value.message == "'value' is a required property"
 
     validate_document("type: list\nvalue:\n  type: flag")
     validate_document("type: list\nvalue:\n  type: integer")
@@ -349,7 +351,7 @@ value:
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 def test_tuple_type():
     # test minimal document
@@ -362,7 +364,7 @@ values:
 """
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: tuple")
-    assert e_info.value.message == "'values' is a required property"
+    # assert e_info.value.message == "'values' is a required property"
 
     validate_document(minimal_document)
 
@@ -374,7 +376,7 @@ values:
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 def test_map_type():
     # test minimal document
@@ -391,7 +393,7 @@ fields:
 
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: map")
-    assert e_info.value.message == "'fields' is a required property"
+    # assert e_info.value.message == "'fields' is a required property"
 
     validate_document(minimal_document)
 
@@ -429,7 +431,7 @@ fields:
     # test additional fields
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
-    assert e_info.value.message == "Additional properties are not allowed ('foo' was unexpected)"
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 # def test_time_type():
 #     # test default
@@ -446,3 +448,157 @@ fields:
 # def test_duration_type():
 #     # test default
 #     validate_document("type: duration")
+
+
+def test_records_type():
+    # test minimal document
+    with pytest.raises(ValidationError) as e_info:
+        validate_document("type: record")
+    # assert e_info.value.message == "'record' is a required property"
+
+    validate_document("type: record\nrecord: foo")
+
+    # test validity of the record value
+    document = """\
+type: record
+record: {value}
+"""
+
+    for name in VALID_NAMES:
+        validate_document(document.replace("{value}", name))
+
+    for name in INVALID_NAMES:
+        with pytest.raises(ValidationError) as e_info:
+            validate_document(document.replace("{value}", name))
+        # assert e_info.value.message == ""
+
+    # test additional fields
+    with pytest.raises(ValidationError) as e_info:
+        validate_document("type: record\nrecord: foo\nfoo: bar")
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
+
+def test_records_without_root():
+    document = """\
+records:
+  foo:
+    value:
+      type: string
+"""
+
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(document)
+
+def test_records():
+    document = """\
+records:
+  foo:
+    value:
+      type: string
+      length:
+        maximum: 42
+      pattern: "Hello world!"
+
+type: record
+record: foo
+"""
+
+    validate_document(document)
+
+    # test 3 fields of records
+    document = """\
+records:
+  foo:
+    name: Foo
+    description: "This is the description of the 'Foo' record."
+    value:
+      type: string
+      length:
+        maximum: 42
+      pattern: "Hello world!"
+
+type: record
+record: foo
+"""
+    validate_document(document)
+
+    document = """\
+records:
+  foo:
+    name: Foo
+    description: "This is the description of the 'Foo' record."
+
+type: record
+record: foo
+"""
+
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(document)
+    # assert e_info.value.message == ""
+
+    # test validity of the records name
+    document = """\
+records:
+  {value}:
+    value:
+      type: string
+
+type: record
+record: foo
+"""
+
+    for name in VALID_NAMES:
+        validate_document(document.replace("{value}", name))
+
+    for name in INVALID_NAMES:
+        with pytest.raises(ValidationError) as e_info:
+            validate_document(document.replace("{value}", name))
+        # assert e_info.value.message == ""
+
+    # test validity of the records value
+    document = """\
+records:
+  fll:
+    value:
+      bar: quz
+
+type: record
+record: foo
+"""
+
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(document)
+
+def test_some_records_example():
+    document = """\
+records:
+  a-flag:
+    name: A flag
+    description: This is a basic flag.
+    value:
+      type: flag
+  a-integer:
+    name: An integer
+    description: This is a basic integer.
+    value:
+      type: integer
+  a-string:
+    name: A string
+    description: This is a basic string.
+    value:
+      type: string
+
+type: map
+fields:
+  foo:
+    type: record
+    record: a-flag
+  bar:
+    type: record
+    record: a-integer
+  quz:
+    type: record
+    record: a-string
+option: true
+"""
+
+    validate_document(document)

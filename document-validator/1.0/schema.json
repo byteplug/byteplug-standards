@@ -3,11 +3,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "To be written.",
   "type": "object",
-  "allOf": [
+  "properties": {
+    "records": {
+      "$ref": "#/$defs/records-properties"
+    }
+  },
+  "anyOf": [
     {
       "$ref": "#/$defs/value-type"
     }
   ],
+  "required": ["type"],
   "unevaluatedProperties": false,
   "$defs": {
     "value-type": {
@@ -26,7 +32,8 @@
             "time",
             "date",
             "datetime",
-            "duration"
+            "duration",
+            "record"
           ]
         }
       },
@@ -41,8 +48,7 @@
               "type": { "enum": ["flag"] },
               "option": { "type": "boolean" },
               "default": { "type": "boolean" }
-            },
-            "additionalProperties": false
+            }
           }
         },
         {
@@ -61,8 +67,7 @@
               },
               "option": { "type": "boolean" },
               "default": { "type": "number" }
-            },
-            "additionalProperties": false
+            }
           }
         },
         {
@@ -81,8 +86,7 @@
               },
               "option": { "type": "boolean" },
               "default": { "type": "number" }
-            },
-            "additionalProperties": false
+            }
           }
         },
         {
@@ -121,8 +125,7 @@
               },
               "option": { "type": "boolean" }
             },
-            "required": ["type", "values", "default"],
-            "additionalProperties": false
+            "required": ["type", "values", "default"]
           }
         },
         {
@@ -135,8 +138,7 @@
               "type": { "enum": ["binary"] },
               "option": { "type": "boolean" },
               "default": { "type": "string" }
-            },
-            "additionalProperties": false
+            }
           }
         },
         {
@@ -151,8 +153,7 @@
               "length": { "$ref": "#/$defs/length-rules" },
               "option": { "type": "boolean" }
             },
-            "required": ["type", "value"],
-            "additionalProperties": false
+            "required": ["type", "value"]
           }
         },
         {
@@ -171,8 +172,7 @@
               },
               "option": { "type": "boolean" }
             },
-            "required": ["type", "values"],
-            "additionalProperties": false
+            "required": ["type", "values"]
           }
         },
         {
@@ -197,8 +197,23 @@
               "option": { "type": "boolean" },
               "default": { "type": "boolean" }
             },
-            "required": ["type", "fields"],
-            "additionalProperties": false
+            "required": ["type", "fields"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "record" } },
+            "required": ["type"]
+          },
+          "then": {
+            "properties": {
+              "type": { "enum": ["record"] },
+              "record": {
+                "type": "string",
+                "pattern": "^[a-z]+(-[a-z]+)*$"
+              }
+            },
+            "required": ["type", "record"]
           }
         }
       ]
@@ -240,6 +255,26 @@
           "additionalProperties": false
         }
       ]
+    },
+    "records-properties": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "value": {
+            "type": "object",
+            "$ref": "#/$defs/value-type",
+            "unevaluatedProperties": false
+          }
+        },
+        "required": ["value"],
+        "additionalProperties": false
+      },
+      "propertyNames": {
+        "pattern": "^[a-z]+(-[a-z]+)*$"
+      }
     }
   }
 }
