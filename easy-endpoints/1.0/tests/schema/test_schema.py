@@ -72,3 +72,158 @@ endpoints:
 """
 
     validate_document(document)
+
+# Test-related code that used to be in the Document Validator standard.
+
+# def test_records_type():
+#     # test minimal document
+#     with pytest.raises(ValidationError) as e_info:
+#         validate_document("type: record")
+#     # assert e_info.value.message == "'record' is a required property"
+
+#     validate_document("type: record\nrecord: foo")
+
+#     # test validity of the record value
+#     document = """\
+# type: record
+# record: {value}
+# """
+
+#     for name in VALID_NAMES:
+#         validate_document(document.replace("{value}", name))
+
+#     for name in INVALID_NAMES:
+#         with pytest.raises(ValidationError) as e_info:
+#             validate_document(document.replace("{value}", name))
+#         # assert e_info.value.message == ""
+
+#     # test additional fields
+#     with pytest.raises(ValidationError) as e_info:
+#         validate_document("type: record\nrecord: foo\nfoo: bar")
+#     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
+
+# def test_records_without_root():
+#     document = """\
+# records:
+#   foo:
+#     value:
+#       type: string
+# """
+
+#     with pytest.raises(ValidationError) as e_info:
+#         validate_document(document)
+
+# def test_records():
+#     document = """\
+# records:
+#   foo:
+#     value:
+#       type: string
+#       length:
+#         maximum: 42
+#       pattern: "Hello world!"
+
+# type: record
+# record: foo
+# """
+
+#     validate_document(document)
+
+#     # test 3 fields of records
+#     document = """\
+# records:
+#   foo:
+#     name: Foo
+#     description: "This is the description of the 'Foo' record."
+#     value:
+#       type: string
+#       length:
+#         maximum: 42
+#       pattern: "Hello world!"
+
+# type: record
+# record: foo
+# """
+#     validate_document(document)
+
+#     document = """\
+# records:
+#   foo:
+#     name: Foo
+#     description: "This is the description of the 'Foo' record."
+
+# type: record
+# record: foo
+# """
+
+#     with pytest.raises(ValidationError) as e_info:
+#         validate_document(document)
+#     # assert e_info.value.message == ""
+
+#     # test validity of the records name
+#     document = """\
+# records:
+#   {value}:
+#     value:
+#       type: string
+
+# type: record
+# record: foo
+# """
+
+#     for name in VALID_NAMES:
+#         validate_document(document.replace("{value}", name))
+
+#     for name in INVALID_NAMES:
+#         with pytest.raises(ValidationError) as e_info:
+#             validate_document(document.replace("{value}", name))
+#         # assert e_info.value.message == ""
+
+#     # test validity of the records value
+#     document = """\
+# records:
+#   fll:
+#     value:
+#       bar: quz
+
+# type: record
+# record: foo
+# """
+
+#     with pytest.raises(ValidationError) as e_info:
+#         validate_document(document)
+
+# def test_some_records_example():
+#     document = """\
+# records:
+#   a-flag:
+#     name: A flag
+#     description: This is a basic flag.
+#     value:
+#       type: flag
+#   a-integer:
+#     name: An integer
+#     description: This is a basic integer.
+#     value:
+#       type: integer
+#   a-string:
+#     name: A string
+#     description: This is a basic string.
+#     value:
+#       type: string
+
+# type: map
+# fields:
+#   foo:
+#     type: record
+#     record: a-flag
+#   bar:
+#     type: record
+#     record: a-integer
+#   quz:
+#     type: record
+#     record: a-string
+# option: true
+# """
+
+#     validate_document(document)

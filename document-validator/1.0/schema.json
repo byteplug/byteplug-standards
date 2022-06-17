@@ -3,16 +3,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "To be written.",
   "type": "object",
-  "properties": {
-    "records": {
-      "$ref": "#/$defs/records-properties"
-    }
-  },
-  "anyOf": [
-    {
-      "$ref": "#/$defs/value-type"
-    }
-  ],
+  "$ref": "#/$defs/value-type",
   "required": ["type"],
   "unevaluatedProperties": false,
   "$defs": {
@@ -32,8 +23,7 @@
             "time",
             "date",
             "datetime",
-            "duration",
-            "record"
+            "duration"
           ]
         }
       },
@@ -199,22 +189,6 @@
             },
             "required": ["type", "fields"]
           }
-        },
-        {
-          "if": {
-            "properties": { "type": { "const": "record" } },
-            "required": ["type"]
-          },
-          "then": {
-            "properties": {
-              "type": { "enum": ["record"] },
-              "record": {
-                "type": "string",
-                "pattern": "^[a-z]+(-[a-z]+)*$"
-              }
-            },
-            "required": ["type", "record"]
-          }
         }
       ]
     },
@@ -255,26 +229,6 @@
           "additionalProperties": false
         }
       ]
-    },
-    "records-properties": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "value": {
-            "type": "object",
-            "$ref": "#/$defs/value-type",
-            "unevaluatedProperties": false
-          }
-        },
-        "required": ["value"],
-        "additionalProperties": false
-      },
-      "propertyNames": {
-        "pattern": "^[a-z]+(-[a-z]+)*$"
-      }
     }
   }
 }
