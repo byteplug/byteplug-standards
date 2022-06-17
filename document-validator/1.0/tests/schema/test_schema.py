@@ -93,13 +93,13 @@ def test_flag_type():
     # test minimal document
     validate_document("type: flag")
 
-    # test the 'default' field
+    # test the 'default' property
     field_boolean_type_test("type: flag\ndefault: {value}", "default")
 
-    # test the 'option' field
+    # test the 'option' property
     option_field_test("type: flag\noption: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: flag\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -108,7 +108,7 @@ def test_integer_type():
     # test minimal document
     validate_document("type: integer")
 
-    # test 'minimum' and 'maximum' fields
+    # test 'minimum' and 'maximum' properties
     validate_document("type: integer\nminimum: 42")
     validate_document("type: integer\nminimum:\n  value: 42")
     validate_document("type: integer\nminimum:\n  exclusive: false\n  value: 42")
@@ -148,13 +148,13 @@ maximum:
 """
     validate_document(document)
 
-    # test 'default' field
+    # test 'default' property
     field_number_type_test("type: integer\ndefault: {value}", "default")
 
-    # test 'option' field
+    # test 'option' property
     option_field_test("type: integer\noption: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: integer\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -163,7 +163,7 @@ def test_decimal_type():
     # test minimal document
     validate_document("type: decimal")
 
-    # test 'minimum' and 'maximum' fields
+    # test 'minimum' and 'maximum' properties
     validate_document("type: decimal\nminimum: 42.0")
     validate_document("type: decimal\nminimum:\n  value: 42.0")
     validate_document("type: decimal\nminimum:\n  exclusive: false\n  value: 42.0")
@@ -203,13 +203,13 @@ maximum:
 """
     validate_document(document)
 
-    # test 'default' field
+    # test 'default' property
     field_number_type_test("type: decimal\ndefault: {value}", "default")
 
-    # test 'option' field
+    # test 'option' property
     option_field_test("type: decimal\noption: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: decimal\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -218,7 +218,7 @@ def test_string_type():
     # test minimal document
     validate_document("type: string")
 
-    # test the 'length' field
+    # test the 'length' property
     validate_document("type: string\nlength: 42")
 
     validate_document("type: string\nlength:\n  minimum: 42")
@@ -239,16 +239,16 @@ def test_string_type():
         validate_document("type: string\nlength:\n  foo: bar")
     # assert e_info.value.message == ""
 
-    # test the 'pattern' field
+    # test the 'pattern' property
     validate_document("type: string\npattern: \"^[a-z]+(-[a-z]+)*$\"")
 
-    # test 'default' field
+    # test 'default' property
     field_string_type_test("type: string\ndefault: {value}", "default")
 
-    # test 'option' field
+    # test 'option' property
     option_field_test("type: string\noption: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: string\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -296,10 +296,10 @@ default: {value}
             validate_document(document_default_value.replace("{value}", name))
         # assert e_info.value.message == ""
 
-    # test 'option' field
+    # test 'option' property
     option_field_test(minimal_document + "option: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -323,7 +323,7 @@ value:
     validate_document("type: list\nvalue:\n  type: integer")
     validate_document(minimal_document)
 
-    # test 'length' field
+    # test 'length' property
     validate_document(minimal_document + "length: 42")
     validate_document(minimal_document + "length:\n  minimum: 42")
     validate_document(minimal_document + "length:\n  maximum: 42")
@@ -343,10 +343,10 @@ value:
         validate_document(minimal_document + "length:\n  foo: bar")
     # assert e_info.value.message == ""
 
-    # test 'option' field field
+    # test 'option' property
     option_field_test(minimal_document + "option: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -368,10 +368,10 @@ values:
 
     # TODO; test checking empty array
 
-    # test 'option' field
+    # test 'option' property
     option_field_test(minimal_document + "option: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
@@ -423,26 +423,26 @@ fields:
         validate_document(document)
     # assert e_info.value.message == ""
 
-    # test 'option' field field
+    # test 'option' property
     option_field_test(minimal_document + "option: {value}")
 
-    # test additional fields
+    # test additional properties
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 # def test_time_type():
-#     # test default
+#     # test minimal document
 #     validate_document("type: time")
 
 # def test_date_type():
-#     # test default
+#     # test minimal document
 #     validate_document("type: date")
 
 # def test_datetime_type():
-#     # test default
+#     # test minimal document
 #     validate_document("type: datetime")
 
 # def test_duration_type():
-#     # test default
+#     # test minimal document
 #     validate_document("type: duration")
