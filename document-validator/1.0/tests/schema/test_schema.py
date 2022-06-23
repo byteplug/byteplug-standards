@@ -93,9 +93,6 @@ def test_flag_type():
     # test minimal document
     validate_document("type: flag")
 
-    # test the 'default' property
-    field_boolean_type_test("type: flag\ndefault: {value}", "default")
-
     # test the 'option' property
     option_field_test("type: flag\noption: {value}")
 
@@ -147,9 +144,6 @@ maximum:
   value: 100
 """
     validate_document(document)
-
-    # test 'default' property
-    field_number_type_test("type: integer\ndefault: {value}", "default")
 
     # test 'option' property
     option_field_test("type: integer\noption: {value}")
@@ -203,9 +197,6 @@ maximum:
 """
     validate_document(document)
 
-    # test 'default' property
-    field_number_type_test("type: decimal\ndefault: {value}", "default")
-
     # test 'option' property
     option_field_test("type: decimal\noption: {value}")
 
@@ -242,9 +233,6 @@ def test_string_type():
     # test the 'pattern' property
     validate_document("type: string\npattern: \"^[a-z]+(-[a-z]+)*$\"")
 
-    # test 'default' property
-    field_string_type_test("type: string\ndefault: {value}", "default")
-
     # test 'option' property
     option_field_test("type: string\noption: {value}")
 
@@ -258,42 +246,26 @@ def test_enum_type():
     minimal_document = """\
 type: enum
 values: [foo, bar, quz]
-default: foo
 """
 
     with pytest.raises(ValidationError) as e_info:
         validate_document("type: enum")
     # assert e_info.value.message == "'values' is a required property"
 
-    with pytest.raises(ValidationError) as e_info:
-        validate_document("type: enum\nvalues: [foo, bar, quz]")
-    # assert e_info.value.message == "'default' is a required property"
-
     validate_document(minimal_document)
 
     # test validity of names
-    document_value = """\
+    document = """\
 type: enum
 values: [{value}]
-default: foo
-"""
-    document_default_value = """\
-type: enum
-values: [foo]
-default: {value}
 """
 
     for name in VALID_NAMES:
-        validate_document(document_value.replace("{value}", name))
-        validate_document(document_default_value.replace("{value}", name))
+        validate_document(document.replace("{value}", name))
 
     for name in INVALID_NAMES:
         with pytest.raises(ValidationError) as e_info:
-            validate_document(document_value.replace("{value}", name))
-        # assert e_info.value.message == ""
-
-        with pytest.raises(ValidationError) as e_info:
-            validate_document(document_default_value.replace("{value}", name))
+            validate_document(document.replace("{value}", name))
         # assert e_info.value.message == ""
 
     # test 'option' property

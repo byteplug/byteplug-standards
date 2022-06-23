@@ -31,8 +31,7 @@
           "then": {
             "properties": {
               "type": { "enum": ["flag"] },
-              "option": { "type": "boolean" },
-              "default": { "type": "boolean" }
+              "option": { "type": "boolean" }
             }
           }
         },
@@ -50,8 +49,7 @@
               "maximum": {
                 "$ref": "#/$defs/minimum-maximum-rules"
               },
-              "option": { "type": "boolean" },
-              "default": { "type": "number" }
+              "option": { "type": "boolean" }
             }
           }
         },
@@ -69,8 +67,7 @@
               "maximum": {
                 "$ref": "#/$defs/minimum-maximum-rules"
               },
-              "option": { "type": "boolean" },
-              "default": { "type": "number" }
+              "option": { "type": "boolean" }
             }
           }
         },
@@ -84,8 +81,7 @@
               "type": { "enum": ["string"] },
               "length": { "$ref": "#/$defs/length-rules" },
               "pattern": { "type": "string" },
-              "option": { "type": "boolean" },
-              "default": { "type": "string" }
+              "option": { "type": "boolean" }
             }
           }
         },
@@ -104,13 +100,9 @@
                   "pattern": "^[a-z]+(-[a-z]+)*$"
                 }
               },
-              "default": {
-                "type": "string",
-                "pattern": "^[a-z]+(-[a-z]+)*$"
-              },
               "option": { "type": "boolean" }
             },
-            "required": ["type", "values", "default"]
+            "required": ["type", "values"]
           }
         },
         {
@@ -166,8 +158,7 @@
                   "pattern": "^[a-z]+(-[a-z]+)*$"
                 }
               },
-              "option": { "type": "boolean" },
-              "default": { "type": "boolean" }
+              "option": { "type": "boolean" }
             },
             "required": ["type", "fields"]
           }
