@@ -16,14 +16,9 @@
             "decimal",
             "string",
             "enum",
-            "binary",
             "list",
             "tuple",
-            "map",
-            "time",
-            "date",
-            "datetime",
-            "duration"
+            "map"
           ]
         }
       },
@@ -116,19 +111,6 @@
               "option": { "type": "boolean" }
             },
             "required": ["type", "values", "default"]
-          }
-        },
-        {
-          "if": {
-            "properties": { "type": { "const": "binary" } },
-            "required": ["type"]
-          },
-          "then": {
-            "properties": {
-              "type": { "enum": ["binary"] },
-              "option": { "type": "boolean" },
-              "default": { "type": "string" }
-            }
           }
         },
         {

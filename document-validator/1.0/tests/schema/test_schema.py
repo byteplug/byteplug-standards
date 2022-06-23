@@ -304,10 +304,6 @@ default: {value}
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
-# def test_binary_type():
-#     # test minimal document
-#     validate_document("type: binary")
-
 def test_list_type():
     # test minimal document
     minimal_document = """\
@@ -430,19 +426,3 @@ fields:
     with pytest.raises(ValidationError) as e_info:
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
-
-# def test_time_type():
-#     # test minimal document
-#     validate_document("type: time")
-
-# def test_date_type():
-#     # test minimal document
-#     validate_document("type: date")
-
-# def test_datetime_type():
-#     # test minimal document
-#     validate_document("type: datetime")
-
-# def test_duration_type():
-#     # test minimal document
-#     validate_document("type: duration")
