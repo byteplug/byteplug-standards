@@ -14,9 +14,6 @@
     "summary": {
       "type": "string"
     },
-    "description": {
-      "type": "string"
-    },
     "contact": {
       "$ref": "#/$defs/contact"
     },
@@ -27,32 +24,52 @@
       "type": "string"
     },
     "records": {
-      "$ref": "#/$defs/records-properties"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/record-or-error-property"
+      },
+      "propertyNames": {
+        "pattern": "^[a-z]+(-[a-z]+)*$"
+      }
     },
     "endpoints": {
       "type": "object",
       "additionalProperties": {
-        "oneOf": [
-          {
-            "$ref": "#/$defs/root-endpoint"
-          },
-          {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/collection-endpoint"
-            },
-            "propertyNames": {
-              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
-            }
-          }
-        ]
+        "$ref": "#/$defs/endpoint-property"
       },
       "propertyNames": {
-        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+        "pattern": "^[a-z]+(-[a-z]+)*$"
+      }
+    },
+    "collections": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "endpoints": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/endpoint-property"
+            },
+            "propertyNames": {
+              "pattern": "^[a-z]+(-[a-z]+)*$"
+            }
+          }
+        },
+        "required": ["endpoints"],
+        "additionalProperties": false
+      },
+      "propertyNames": {
+        "pattern": "^[a-z]+(-[a-z]+)*$"
       }
     }
   },
-  "required": ["endpoints"],
   "additionalProperties": false,
   "$defs": {
     "contact": {
@@ -95,53 +112,32 @@
         }
       ]
     },
-    "records-properties": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "value": {
-            "type": "object",
-            "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type",
-            "unevaluatedProperties": false
-          }
-        },
-        "required": ["value"],
-        "additionalProperties": false
-      },
-      "propertyNames": {
-        "pattern": "^[a-z]+(-[a-z]+)*$"
-      }
-    },
-    "root-endpoint": {
+    "record-or-error-property": {
       "type": "object",
       "properties": {
-        "request": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "value": {
           "type": "object",
-          "allOf": [
-            {
-              "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
-            }
-          ],
-          "unevaluatedProperties": false
-        },
-        "response": {
-          "type": "object",
-          "allOf": [
-            {
-              "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
-            }
-          ],
+          "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type",
           "unevaluatedProperties": false
         }
       },
+      "required": ["value"],
       "additionalProperties": false
     },
-    "collection-endpoint": {
+    "endpoint-property": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "authentication": {
+          "type": "boolean"
+        },
         "operate": {
           "enum": ["item", "collection"]
         },
@@ -152,6 +148,7 @@
               "$ref": "https://www.byteplug.io/standards/document-validator/1.0/schema.json#/$defs/value-type"
             }
           ],
+          "required": ["type"],
           "unevaluatedProperties": false
         },
         "response": {
@@ -162,10 +159,18 @@
             }
           ],
           "unevaluatedProperties": false
+        },
+        "errors": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/record-or-error-property"
+          },
+          "propertyNames": {
+            "pattern": "^[a-z]+(-[a-z]+)*$"
+          }
         }
       },
-      "additionalProperties": false,
-      "required": ["operate"]
+      "additionalProperties": false
     }
   }
 }
