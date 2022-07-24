@@ -56,7 +56,7 @@ def validate_document(document):
         "https": uri_loader
     }
     resolver = RefResolver(
-        base_uri = "https://www.byteplug.io/standards/easy-endpoints/1.0/schema.json",
+        base_uri = "https://www.byteplug.io/standards/endpoints/1.0/schema.json",
         referrer = schema,
         handlers=handlers
     )

@@ -1,5 +1,5 @@
 {
-  "$id": "https://www.byteplug.io/standards/easy-endpoints/1.0/schema.json",
+  "$id": "https://www.byteplug.io/standards/endpoints/1.0/schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "To be written.",
 

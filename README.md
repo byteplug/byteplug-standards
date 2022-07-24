@@ -26,7 +26,7 @@ instead of JSON) and without its dynamic fields.
 
 - `schema` - Check if the JSON Schema properly validates YAML specs
 
-## Easy Endpoints
+## Endpoints
 
 This standard defines a set of rules to implement HTTP API. It's built on top
 of the Document Validator standard to define input and output of its endpoints.

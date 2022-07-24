@@ -1,4 +1,4 @@
-# Easy Endpoints: Foobar
+# Endpoints: Foobar
 
 To be written.
 
