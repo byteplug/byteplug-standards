@@ -14,13 +14,13 @@
           "description": "To be written.",
           "enum": [
             "flag",
-            "integer",
-            "decimal",
+            "number",
             "string",
-            "enum",
-            "list",
+            "array",
+            "object",
             "tuple",
-            "map"
+            "map",
+            "enum"
           ]
         }
       },
@@ -41,34 +41,17 @@
         },
         {
           "if": {
-            "properties": { "type": { "const": "integer" } },
+            "properties": { "type": { "const": "number" } },
             "required": ["type"]
           },
           "then": {
             "$comment": "https://www.byteplug.io/standards/document-validator/1.0/document.html#foo-bar",
             "description": "To be written.",
             "properties": {
-              "type": { "enum": ["integer"] },
-              "minimum": {
-                "$ref": "#/$defs/minimum-maximum-rules"
+              "type": { "enum": ["number"] },
+              "decimal": {
+                "type": "boolean"
               },
-              "maximum": {
-                "$ref": "#/$defs/minimum-maximum-rules"
-              },
-              "option": { "type": "boolean" }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": { "type": { "const": "decimal" } },
-            "required": ["type"]
-          },
-          "then": {
-            "$comment": "https://www.byteplug.io/standards/document-validator/1.0/document.html#foo-bar",
-            "description": "To be written.",
-            "properties": {
-              "type": { "enum": ["decimal"] },
               "minimum": {
                 "$ref": "#/$defs/minimum-maximum-rules"
               },
@@ -97,36 +80,32 @@
         },
         {
           "if": {
-            "properties": { "type": { "const": "enum" } },
+            "properties": { "type": { "const": "array" } },
             "required": ["type"]
           },
           "then": {
             "$comment": "https://www.byteplug.io/standards/document-validator/1.0/document.html#foo-bar",
             "description": "To be written.",
             "properties": {
-              "type": { "enum": ["enum"] },
-              "values": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "pattern": "^[a-z]+(-[a-z]+)*$"
-                }
-              },
+              "type": { "enum": ["array"] },
+              "value": { "$ref": "#/$defs/value-type" },
+              "length": { "$ref": "#/$defs/length-rules" },
               "option": { "type": "boolean" }
             },
-            "required": ["type", "values"]
+            "required": ["type", "value"]
           }
         },
         {
           "if": {
-            "properties": { "type": { "const": "list" } },
+            "properties": { "type": { "const": "object" } },
             "required": ["type"]
           },
           "then": {
             "$comment": "https://www.byteplug.io/standards/document-validator/1.0/document.html#foo-bar",
             "description": "To be written.",
             "properties": {
-              "type": { "enum": ["list"] },
+              "type": { "enum": ["object"] },
+              "key": { "enum": ["integer", "string"]},
               "value": { "$ref": "#/$defs/value-type" },
               "length": { "$ref": "#/$defs/length-rules" },
               "option": { "type": "boolean" }
@@ -144,7 +123,7 @@
             "description": "To be written.",
             "properties": {
               "type": { "enum": ["tuple"] },
-              "values": {
+              "items": {
                 "type": "array",
                 "items": {
                   "$ref": "#/$defs/value-type"
@@ -152,7 +131,7 @@
               },
               "option": { "type": "boolean" }
             },
-            "required": ["type", "values"]
+            "required": ["type", "items"]
           }
         },
         {
@@ -173,12 +152,34 @@
                   "unevaluatedProperties": false
                 },
                 "propertyNames": {
-                  "pattern": "^[a-z]+(-[a-z]+)*$"
+                  "pattern": "^[a-zA-Z0-9\\-\\_]+$"
                 }
               },
               "option": { "type": "boolean" }
             },
             "required": ["type", "fields"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "enum" } },
+            "required": ["type"]
+          },
+          "then": {
+            "$comment": "https://www.byteplug.io/standards/document-validator/1.0/document.html#foo-bar",
+            "description": "To be written.",
+            "properties": {
+              "type": { "enum": ["enum"] },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9\\-\\_]+$"
+                }
+              },
+              "option": { "type": "boolean" }
+            },
+            "required": ["type", "values"]
           }
         }
       ]

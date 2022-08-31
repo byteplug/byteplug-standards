@@ -1,7 +1,7 @@
 import json
 import yaml
 from yaml import CLoader as Loader
-from jsonschema import validate
+from jsonschema import validate, Validator
 from jsonschema.exceptions import ValidationError
 import pytest
 
@@ -16,20 +16,28 @@ import pytest
 # - For the enum type, can we restrict the default value to be one in the
 #   values list.
 
+# - check map.fields can be empty
+# - check tuple.values can be empty
+
+
 VALID_NAMES = [
     "foobar",
-    "foo-bar"
+    "FOOBAR",
+    "123456",
+    "foo-bar",
+    "foo_bar"
 ]
 
 INVALID_NAMES = [
-    "Foobar",
-    "foo_bar",
-    "-foobar",
-    "barfoo-",
-    "foo--bar"
+    "foo*bar",
+    "foo&bar",
+    "bar'foo",
+    "foo)bar"
 ]
 
+
 schema = json.load(open("../../schema.json"))
+Validator.check_schema(schema)
 
 def validate_document(document):
     document = yaml.load(document, Loader=Loader)
@@ -101,41 +109,49 @@ def test_flag_type():
         validate_document("type: flag\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
-def test_integer_type():
+def test_number_type():
     # test minimal document
-    validate_document("type: integer")
+    validate_document("type: number")
 
-    # test 'minimum' and 'maximum' properties
-    validate_document("type: integer\nminimum: 42")
-    validate_document("type: integer\nminimum:\n  value: 42")
-    validate_document("type: integer\nminimum:\n  exclusive: false\n  value: 42")
-    validate_document("type: integer\nminimum:\n  exclusive: true\n  value: 42")
+    # test 'decimal' property
+    option_field_test("type: number\ndecimal: {value}")
+
+    # test 'minimum' and 'maximum' properties (with decimal variants)
+    validate_document("type: number\nminimum: 42")
+    validate_document("type: number\nminimum:\n  value: 42")
+    validate_document("type: number\nminimum:\n  exclusive: false\n  value: 42")
+    validate_document("type: number\nminimum:\n  exclusive: true\n  value: 42")
+
+    validate_document("type: number\nminimum: 42.0")
+    validate_document("type: number\nminimum:\n  value: 42.0")
+    validate_document("type: number\nminimum:\n  exclusive: false\n  value: 42.0")
+    validate_document("type: number\nminimum:\n  exclusive: true\n  value: 42.0")
 
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: integer\nminimum:\n  exclusive: false")
+        validate_document("type: number\nminimum:\n  exclusive: false")
     # assert e_info.value.message == ""
 
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: integer\nminimum:\n  value: 42\n  foo: bar")
+        validate_document("type: number\nminimum:\n  value: 42\n  foo: bar")
     # assert e_info.value.message == ""
 
-    validate_document("type: integer\nmaximum: 42")
-    validate_document("type: integer\nmaximum:\n  value: 42")
-    validate_document("type: integer\nmaximum:\n  exclusive: false\n  value: 42")
-    validate_document("type: integer\nmaximum:\n  exclusive: true\n  value: 42")
+    validate_document("type: number\nmaximum: 42")
+    validate_document("type: number\nmaximum:\n  value: 42")
+    validate_document("type: number\nmaximum:\n  exclusive: false\n  value: 42")
+    validate_document("type: number\nmaximum:\n  exclusive: true\n  value: 42")
 
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: integer\nmaximum:\n  exclusive: true")
+        validate_document("type: number\nmaximum:\n  exclusive: true")
     # assert e_info.value.message == ""
 
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: integer\nmaximum:\n  value: 42\n  foo: bar")
+        validate_document("type: number\nmaximum:\n  value: 42\n  foo: bar")
     # assert e_info.value.message == ""
 
-    validate_document("type: integer\nminimum: 42\nmaximum: 42")
+    validate_document("type: number\nminimum: 42\nmaximum: 42")
 
     document = """\
-type: integer
+type: number
 minimum:
   exclusive: false
   value: 10
@@ -146,63 +162,11 @@ maximum:
     validate_document(document)
 
     # test 'option' property
-    option_field_test("type: integer\noption: {value}")
+    option_field_test("type: number\noption: {value}")
 
     # test additional properties
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: integer\nfoo: bar")
-    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
-
-def test_decimal_type():
-    # test minimal document
-    validate_document("type: decimal")
-
-    # test 'minimum' and 'maximum' properties
-    validate_document("type: decimal\nminimum: 42.0")
-    validate_document("type: decimal\nminimum:\n  value: 42.0")
-    validate_document("type: decimal\nminimum:\n  exclusive: false\n  value: 42.0")
-    validate_document("type: decimal\nminimum:\n  exclusive: true\n  value: 42.0")
-
-    with pytest.raises(ValidationError) as e_info:
-        validate_document("type: decimal\nminimum:\n  exclusive: false")
-    # assert e_info.value.message == ""
-
-    with pytest.raises(ValidationError) as e_info:
-        validate_document("type: decimal\nminimum:\n  value: 42.0\n  foo: bar")
-    # assert e_info.value.message == ""
-
-    validate_document("type: decimal\nmaximum: 42.0")
-    validate_document("type: decimal\nmaximum:\n  value: 42.0")
-    validate_document("type: decimal\nmaximum:\n  exclusive: false\n  value: 42.0")
-    validate_document("type: decimal\nmaximum:\n  exclusive: true\n  value: 42.0")
-
-    with pytest.raises(ValidationError) as e_info:
-        validate_document("type: decimal\nmaximum:\n  exclusive: true")
-    # assert e_info.value.message == ""
-
-    with pytest.raises(ValidationError) as e_info:
-        validate_document("type: decimal\nmaximum:\n  value: 42.0\n  foo: bar")
-    # assert e_info.value.message == ""
-
-    validate_document("type: decimal\nminimum: 42.0\nmaximum: 42.0")
-
-    document = """\
-type: decimal
-minimum:
-  exclusive: false
-  value: 10.0
-maximum:
-  exclusive: true
-  value: 100.0
-"""
-    validate_document(document)
-
-    # test 'option' property
-    option_field_test("type: decimal\noption: {value}")
-
-    # test additional properties
-    with pytest.raises(ValidationError) as e_info:
-        validate_document("type: decimal\nfoo: bar")
+        validate_document("type: number\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
 def test_string_type():
@@ -241,32 +205,40 @@ def test_string_type():
         validate_document("type: string\nfoo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
-def test_enum_type():
+def test_array_type():
     # test minimal document
     minimal_document = """\
-type: enum
-values: [foo, bar, quz]
+type: array
+value:
+  type: string
 """
-
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: enum")
-    # assert e_info.value.message == "'values' is a required property"
+        validate_document("type: array")
+    # assert e_info.value.message == "'value' is a required property"
 
+    validate_document("type: array\nvalue:\n  type: flag")
+    validate_document("type: array\nvalue:\n  type: number")
     validate_document(minimal_document)
 
-    # test validity of names
-    document = """\
-type: enum
-values: [{value}]
-"""
+    # test 'length' property
+    validate_document(minimal_document + "length: 42")
+    validate_document(minimal_document + "length:\n  minimum: 42")
+    validate_document(minimal_document + "length:\n  maximum: 42")
+    validate_document(minimal_document + "length:\n  minimum: 0\n  maximum: 42")
 
-    for name in VALID_NAMES:
-        validate_document(document.replace("{value}", name))
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(minimal_document + "length: -1")
+    # assert e_info.value.message == ""
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(minimal_document + "length:\n  minimum: -1")
+    # assert e_info.value.message == ""
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(minimal_document + "length:\n  maximum: -1")
+    # assert e_info.value.message == ""
 
-    for name in INVALID_NAMES:
-        with pytest.raises(ValidationError) as e_info:
-            validate_document(document.replace("{value}", name))
-        # assert e_info.value.message == ""
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(minimal_document + "length:\n  foo: bar")
+    # assert e_info.value.message == ""
 
     # test 'option' property
     option_field_test(minimal_document + "option: {value}")
@@ -276,20 +248,27 @@ values: [{value}]
         validate_document(minimal_document + "foo: bar")
     assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
 
-def test_list_type():
+def test_object_type():
     # test minimal document
     minimal_document = """\
-type: list
+type: object
 value:
   type: string
 """
     with pytest.raises(ValidationError) as e_info:
-        validate_document("type: list")
+        validate_document("type: object")
     # assert e_info.value.message == "'value' is a required property"
 
-    validate_document("type: list\nvalue:\n  type: flag")
-    validate_document("type: list\nvalue:\n  type: integer")
+    validate_document("type: object\nvalue:\n  type: flag")
+    validate_document("type: object\nvalue:\n  type: number")
     validate_document(minimal_document)
+
+    # test 'key' property
+    validate_document(minimal_document + "key: integer")
+    validate_document(minimal_document + "key: string")
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(minimal_document + "key: yolo")
+    # assert e_info.value.message == ""
 
     # test 'length' property
     validate_document(minimal_document + "length: 42")
@@ -323,9 +302,9 @@ def test_tuple_type():
     # test minimal document
     minimal_document = """\
 type: tuple
-values:
+items:
   - type: flag
-  - type: integer
+  - type: number
   - type: string
 """
     with pytest.raises(ValidationError) as e_info:
@@ -352,7 +331,7 @@ fields:
   foo:
     type: flag
   bar:
-    type: integer
+    type: number
   quz:
     type: string
 """
@@ -363,12 +342,12 @@ fields:
 
     validate_document(minimal_document)
 
-    # test fields with invalid names
+    # TODO; test fields with invalid names
     document = """\
 type: map
 fields:
   {value}:
-    type: integer
+    type: number
 """
 
     for name in VALID_NAMES:
@@ -390,6 +369,41 @@ fields:
     with pytest.raises(ValidationError) as e_info:
         validate_document(document)
     # assert e_info.value.message == ""
+
+    # test 'option' property
+    option_field_test(minimal_document + "option: {value}")
+
+    # test additional properties
+    with pytest.raises(ValidationError) as e_info:
+        validate_document(minimal_document + "foo: bar")
+    assert e_info.value.message == "Unevaluated properties are not allowed ('foo' was unexpected)"
+
+def test_enum_type():
+    # test minimal document
+    minimal_document = """\
+type: enum
+values: [foo, bar, quz]
+"""
+
+    with pytest.raises(ValidationError) as e_info:
+        validate_document("type: enum")
+    # assert e_info.value.message == "'values' is a required property"
+
+    validate_document(minimal_document)
+
+    # test validity of names
+    document = """\
+type: enum
+values: ["{value}"]
+"""
+
+    for name in VALID_NAMES:
+        validate_document(document.replace("{value}", name))
+
+    for name in INVALID_NAMES:
+        with pytest.raises(ValidationError) as e_info:
+            validate_document(document.replace("{value}", name))
+        # assert e_info.value.message == ""
 
     # test 'option' property
     option_field_test(minimal_document + "option: {value}")
