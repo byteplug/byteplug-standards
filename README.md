@@ -20,6 +20,7 @@ instead of JSON) and without its dynamic fields.
 
 - `document.md` - The only text defining the standard.
 - `example.yml` - The official example showcasing a YAML specs.
+- `metadata.yml` - Meta infos about the augmented types (categories, names, descriptions, example specs, example valid/invalid documents).
 - `schema.json` - The JSON Schema to validate YAML specs (used for external tools)
 
 **Test Suites**
