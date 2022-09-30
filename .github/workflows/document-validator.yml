@@ -20,13 +20,13 @@ jobs:
         python -m pip install grip
     - name: Document to HTML
       run: |
-        cd document-validator/1.0/
+        cd src/standards/document-validator/1.0/
         grip document.md --wide --title="Document Validator 1.0" --export
     - name: Upload the HTML document
       uses: actions/upload-artifact@v3
       with:
         name: document-validator-html-version
-        path: document-validator/1.0/document.html
+        path: src/standards/document-validator/1.0/document.html
 
   schema-test-suite:
     runs-on: ubuntu-latest
@@ -43,5 +43,5 @@ jobs:
         python -m pip install pytest pyyaml jsonschema
     - name: Run test suite
       run: |
-        cd document-validator/1.0/tests/schema/
+        cd src/standards/document-validator/1.0/tests/schema/
         pytest

@@ -1,7 +1,7 @@
 # Byteplug Standards
 
-This repository contains the documents and test suites of the Byteplug in-house
-standards.
+This repository contains the source code of the website along with the
+standards documents and test suites of the Byteplug in-house standards.
 
 Test suites are written in Python and should be executed after creating a
 virtual environment (with `python3 -m virtualenv .python && source .python/bin/activate`)
