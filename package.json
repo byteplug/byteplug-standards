@@ -9,7 +9,9 @@
   "dependencies": {
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.2",
-    "vue": "^3.2.38"
+    "vue": "^3.2.38",
+    "vue3-highlightjs": "^1.0.5",
+    "yaml": "^2.1.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.3",
