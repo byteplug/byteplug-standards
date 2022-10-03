@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import "bootstrap/dist/css/bootstrap.css"
+import "@/main.scss"
 import 'bootstrap'
 
 import Website from './Website.vue'
@@ -33,4 +34,9 @@ const router = createRouter({
 })
 
 app.use(router)
+
+import VueHighlightJS from 'vue3-highlightjs'
+import 'highlight.js/styles/solarized-light.css'
+app.use(VueHighlightJS)
+
 app.mount('#website')

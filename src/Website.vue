@@ -9,3 +9,14 @@
     <router-view v-else/>
   </main>
 </template>
+
+<style>
+html, body, #app {
+  height: 100%;
+}
+
+@font-face {
+  font-family: "Xolonium";
+  src: local("Xolonium"), url(./fonts/Xolonium/Xolonium-Regular.ttf) format("truetype");
+}
+</style>
