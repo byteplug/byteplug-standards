@@ -1,0 +1,6 @@
+{
+  "email": "john.doe@gmail.com",
+  "password": "1234abcd",
+  "status": "active",
+  "hobbies": ["Soccer", "Badminton", "Movies"]
+}

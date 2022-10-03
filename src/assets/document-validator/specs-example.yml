@@ -1,0 +1,25 @@
+name: Customer
+type: map
+fields:
+  name:
+    type: string
+    option: true
+  email:
+    type: string
+    pattern: ^[^@]+@[^@]+\.[^@]+$
+  password:
+    type: string
+    length:
+      minimum: 8
+      maximum: 16
+  status:
+    type: enum
+    values: [pending, active, deleted]
+  age:
+    type: number
+    decimal: false
+    option: true
+  hobbies:
+    type: array
+    value:
+      type: string

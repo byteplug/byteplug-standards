@@ -1,0 +1,47 @@
+enums:
+  status:
+    values: [foo, bar, quz]
+    default: foo
+    documentation: This is the doc.
+
+schemas:
+  user:
+    fields:
+      - foo
+      - bar
+      - quz
+    default: foo
+    documentation: This is the doc
+
+endpoints:
+  connect:
+    request: foo
+    response: bar
+  user:
+    get:
+      type: resource
+      request: foo
+      response: bar
+
+    edit:
+      type: resource
+      request: foo
+      response: bar
+
+    list:
+      type: collection
+      request:
+        - name: foo
+          type: integer
+          min: 0
+          max: 42
+          default: 42
+          doc: This is the documentation of the 'foo' field.
+
+        - name: bar
+          type: text
+          regex: the-regex
+          default: "Hello world!"
+          doc: This is the documentation of the 'bar' field.
+      response:
+        bar: foo

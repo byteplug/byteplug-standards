@@ -1,0 +1,190 @@
+categories:
+  fundamental:
+    name: Fundamental
+    description: |
+      The fundamental types are the building blocks known to all programming
+      languages.
+    types:
+      - flag
+      - number
+      - string
+  composite:
+    name: Composite
+    description: |
+      The composite types allows to start grouping values and create complex
+      nested trees of values.
+    types:
+      - array
+      - object
+      - tuple
+      - map
+  extra:
+    name: Extra
+    description: |
+      The extra types are the non-essential types that could otherwise be
+      implemented by hand, but are so pervasive in the programming world, it
+      would be a shame not to have them built-in.
+    types:
+      - enum
+types:
+  flag:
+    name: Flag
+    description: |
+      The flag type is the common boolean type with a fancy name. It's
+      implemented with the JSON boolean type and has no notable particular
+      behavior.
+    example:
+      specs: |
+        type: flag
+        option: false
+      validDocument: |
+        true
+      invalidDocument: |
+        1
+  number:
+    name: Number
+    description: |
+      The number type is either an integer or floating-point value. You can
+      restrict it to integers only by using setting the 'decimal' property to
+      false. You can also specify a valid range. It's implemented with the JSON
+      number.
+    example:
+      specs: |
+        type: number
+        decimal: false
+        minimum:
+          exclusive: true
+          value: 10.5
+        maximum: 42
+        option: false
+      validDocument: |
+        42
+      invalidDocument: |
+        42.5
+  string:
+    name: String
+    description: |
+      The string type is the common string type of the other programming
+      languages, or in other words, an array of human-readable characters. You
+      can restrict the character count and a pattern with a regex. It's
+      implemented with the JSON string.
+    example:
+      specs: |
+        type: string
+        length:
+          maximum: 42
+        pattern: "^[a-z]+(-[a-z]+)*$"
+        option: false
+      validDocument: |
+        "hello-world"
+      invalidDocument: |
+        "Hello world!"
+  array:
+    name: Array
+    description: |
+      The array type is a list of values of a defined type. Its length can be
+      defined or undefined. It's implemented with the JSON array.
+
+      Note that the tuple type provides an array-like alternative.
+    example:
+      specs: |
+        type: array
+        value:
+          type: number
+          minimum: 10
+          maximum: 100
+        length:
+          minimum: 2
+        option: false
+      validDocument: |
+        [42, 24.5, 50.0, 23, 100]
+      invalidDocument: |
+        [42]
+  object:
+    name: Object
+    description: |
+      The object type is a list of key-value pairs of defined types. The key
+      can be set to either 'integer' or 'string'. Its length can be defined or
+      undefined. It's implemented with the JSON object.
+
+      Note that the map type provides an object-like alternative.
+    example:
+      specs: |
+        type: object
+        key: integer
+        value:
+          type: string
+        length:
+          maximum: 3
+        option: false
+      validDocument: |
+        {
+          "25": "Pikachu",
+          "42": "Golbat"
+        }
+      invalidDocument: |
+        {
+          "pikachu": "Pikachu",
+          "gobalt": "Golbat"
+        }
+  tuple:
+    name: Tuple
+    description: |
+      The tuple type is a defined list of values. The length of the list and
+      the type of the values it contains are strictly defined in advance. It's
+      implemented with the JSON array.
+    example:
+      specs: |
+        type: tuple
+        items:
+          - type: flag
+          - type: number
+          - type: string
+        option: false
+      validDocument: |
+        [false, 42, "Hello world!"]
+      invalidDocument: |
+        ["Hello world!", false, 42]
+  map:
+    name: Map
+    description: |
+      The map type is a defined list of key-value pairs. The length, the order
+      and the type of values it contains are strictly defined in advance. If
+      one of its field is marked as optional, its value can be omitted and to
+      be interpreted as null. It's implemented with the JSON object.
+    example:
+      specs: |
+        type: map
+        fields:
+          foo:
+            type: flag
+          bar:
+            type: number
+            option: true
+          quz:
+            type: string
+        option: false
+      validDocument: |
+        {
+            "foo": false,
+            "quz": "Hello world!"
+        }
+      invalidDocument: |
+        {
+            "quz": false,
+            "foo": "Hello world!"
+        }
+  enum:
+    name: Enum
+    description: |
+      The enum type is set a of valid string values. It's implemented with a
+      JSON string.
+    example:
+      specs: |
+        type: enum
+        values: [foo, bar, quz]
+        option: false
+      validDocument: |
+        "quz"
+      invalidDocument: |
+        "yolo"
