@@ -1,6 +1,6 @@
 <template>
   <div class="min-vh-100 d-flex flex-column">
-    <navigation-bar/>
+    <!-- <navigation-bar/> -->
     <div class="flex-grow-1 container">
       <div class="h-100 row mt-5">
         <div class="col-6">
@@ -134,7 +134,7 @@ exposing its YAML specification.
 </template>
 
 <script>
-import NavigationBar from '@/components/NavigationBar.vue'
+// import NavigationBar from '@/components/NavigationBar.vue'
 
 // import pythonToolkitExample  from '@/assets/examples/validator/python-toolkit-example.py?raw'
 // import erlangToolkitExample  from '@/assets/examples/validator/erlang-toolkit-example.erl?raw'
@@ -142,7 +142,7 @@ import NavigationBar from '@/components/NavigationBar.vue'
 export default {
   name: 'Endpoints',
   components: {
-    NavigationBar
+    // NavigationBar
   },
   data() {
     return {
