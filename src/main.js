@@ -1,8 +1,36 @@
 import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 import "bootstrap/dist/css/bootstrap.css"
 import 'bootstrap'
 
 import Website from './Website.vue'
+import DocumentValidator from '@/views/DocumentValidator.vue'
+import Endpoints from '@/views/Endpoints.vue'
 
-createApp(Website).mount('#website')
+const app = createApp(Website)
+
+const routes = [
+  {
+      path: '/',
+      name: 'Home'
+  },
+  {
+      path: '/document-validator',
+      name: 'DocumentValidator',
+      component: DocumentValidator
+  },
+  {
+      path: '/endpoints',
+      name: 'Endpoints',
+      component: Endpoints
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes
+})
+
+app.use(router)
+app.mount('#website')
