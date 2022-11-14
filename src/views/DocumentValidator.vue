@@ -1,53 +1,78 @@
 <template>
   <div class="min-vh-100 d-flex flex-column">
-    <div class="flex-grow-1 container">
-      <div class="h-100 row mt-5">
-        <div class="col-6">
-          <div class="mb-5">
-            <h1 class="h2 mb-2">Document Validator</h1>
-            <div class="mb-4">
-Validate your JSON documents with specs written in YAML. An alternative to JSON
-Schema.
-            </div>
-            <div>
-              <a
-                href="https://validator.byteplug.io/"
-                type="button"
-                class="btn btn-primary text-white me-2"
-              >Playground</a>
-              <a
-                href="/standards/json-validator/document.html"
-                type="button"
-                class="btn btn-primary text-white me-2"
-              >Document</a>
-              <button type="button" class="btn btn-primary text-white me-2">Toolkit</button>
-            </div>
-          </div>
-          <div>
+    <navigation-bar/>
+    <section class="py-5 text-center container">
+      <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+          <h1 class="fw-light">Document Validator</h1>
+          <p class="lead text-muted">
+            Validate your JSON documents with specs written in YAML. An
+            alternative to JSON Schema.
+          </p>
+          <p>
+            <a
+              href="#playground-section"
+              class="btn btn-primary my-2 me-2"
+            >Playground</a>
+            <router-link
+              to="/document-validator/document"
+              class="btn btn-secondary my-2 me-2"
+            >Document (draft)</router-link>
+            <a
+              href="#toolkits-section"
+              class="btn btn-secondary my-2"
+            >Toolkits</a>
+          </p>
+        </div>
+      </div>
+    </section>
+    <div class="bg-light" style="height:500px;">
+      <div class="container h-100">
+        <div class="row h-100">
+          <div class="col-7 d-flex flex-column justify-content-center">
             <figure class="text-left">
               <blockquote class="blockquote">
                 <p class="fs-6 f fst-italic">
-How many times do we need to define what a valid input (or output) is. For JSON
-documents, the JSON Schema vocabulary does the job, but couldn't its syntax be
-nicer? This standard provides the easier-to-work-with alternative we need.
+An day to day task of a developer is to define valid input and output. It's
+notably the case for HTTP APIs. For JSON documents, the JSON Schema vocabulary
+does the job, but couldn't its syntax be nicer? This standard provides the
+easier-to-work-with alternative we need.
                 </p>
               </blockquote>
               <figcaption class="blockquote-footer">
                 Jonathan De Wachter, <cite title="Source Title">CTO at Byteplug</cite>
               </figcaption>
             </figure>
+
+          </div>
+          <div class="col-1"></div>
+          <div class="col-4 d-flex flex-column justify-content-center">
+            <pre v-highlightjs="metadata.types['string'].example.specs">
+              <code class="yaml"></code>
+            </pre>
           </div>
         </div>
-        <div class="col-6 d-flex flex-column justify-content-center">
-          <div class="fw-bold">YAML Specs</div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-1"></div>
+        <div class="col-4 d-flex flex-column justify-content-center">
+          <div class="fw-bold">Document Validator</div>
           <pre v-highlightjs="specsExample">
             <code class="yaml"></code>
           </pre>
-          <div class="fw-bold">JSON Document</div>
-          <pre v-highlightjs="validJson">
-            <code class="json"></code>
+        </div>
+        <div class="col-1">vs</div>
+        <div class="col-4">
+          <div class="fw-bold">JSON Schema</div>
+          <pre v-highlightjs="jsonSchemaExample">
+            <code class="yaml"></code>
           </pre>
         </div>
+        <div class="col-1"></div>
       </div>
     </div>
   </div>
@@ -155,7 +180,10 @@ augmented types have a YAML representation.
       </div>
     </div>
   </div>
-  <div class="bg-primary text-white py-5" style="height: 500px;">
+  <div
+    id="playground-section"
+    class="bg-primary text-white py-5"
+  >
     <div class="container">
       <h3>A validation Playground</h3>
       <div>
@@ -165,16 +193,21 @@ only you can learn with it, but it will also remain useful as you work with
 the standard.
       </div>
       <div class="row">
-        <div class="col-6">
-          Image
+        <div class="col-2"></div>
+        <div class="col-8">
+          <img
+            src="/screenshots/validation-playground-screenshot.png"
+            class="img-fluid py-5"
+          >
         </div>
-        <div class="col-6">
-          Image
-        </div>
+        <div class="col-2"></div>
+      </div>
+      <div class="text-center">
+        <a href="https://validator.byteplug.io" class="btn btn-dark">Open the Software</a>
       </div>
     </div>
   </div>
-  <div class="container my-5">
+  <div id="toolkits-section" class="container my-5">
     <h3>With official Toolkits</h3>
     <div class="mb-3">
       Because a standard is merely a document describing things, we rely on
@@ -231,9 +264,12 @@ allow you to pinpoint where the mistake comes from.
 </template>
 
 <script>
+import NavigationBar from '@/components/NavigationBar.vue'
+
 import YAML from 'yaml'
 
 import specsExample from '@/assets/document-validator/specs-example.yml?raw'
+import jsonSchemaExample from '@/assets/document-validator/json-schema-example.json?raw'
 import validJson    from '@/assets/document-validator/valid-json.json?raw'
 import invalidJson  from '@/assets/document-validator/invalid-json.json?raw'
 import metadata from '@/assets/document-validator/metadata.yml?raw'
@@ -244,11 +280,12 @@ import javascriptToolkitExample  from '@/assets/document-validator/javascript-to
 export default {
   name: 'DocumentValidator',
   components: {
-    // NavigationBar
+    NavigationBar
   },
   data() {
     return {
       specsExample: specsExample,
+      jsonSchemaExample: jsonSchemaExample,
       validJson: validJson,
       invalidJson: invalidJson,
 

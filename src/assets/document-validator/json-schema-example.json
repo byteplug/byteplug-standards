@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "type": { "enum": ["map"] },
+    "fields": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "$ref": "#/$defs/value-type",
+        "unevaluatedProperties": false
+      },
+      "propertyNames": {
+        "pattern": "^[a-zA-Z0-9\\-\\_]+$"
+      }
+    },
+    "option": { "type": "boolean" }
+  },
+  "required": ["type", "fields"]
+
+  // Bla bla bla...
+}

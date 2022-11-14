@@ -6,25 +6,38 @@ import "@/main.scss"
 import 'bootstrap'
 
 import Website from './Website.vue'
+import Home from '@/views/Home.vue'
 import DocumentValidator from '@/views/DocumentValidator.vue'
 import Endpoints from '@/views/Endpoints.vue'
+import Paper from '@/views/Paper.vue'
 
 const app = createApp(Website)
 
 const routes = [
   {
-      path: '/',
-      name: 'Home'
+    path: '/',
+    name: 'Home',
+    component: Home
   },
   {
-      path: '/document-validator',
-      name: 'DocumentValidator',
-      component: DocumentValidator
+    path: '/document-validator',
+    name: 'DocumentValidator',
+    component: DocumentValidator
   },
   {
-      path: '/endpoints',
-      name: 'Endpoints',
-      component: Endpoints
+    path: '/document-validator/document',
+    name: 'DocumentValidatorPaper',
+    component: Paper
+  },
+  {
+    path: '/endpoints',
+    name: 'Endpoints',
+    component: Endpoints
+  },
+  {
+    path: '/endpoints/document',
+    name: 'EndpointsPaper',
+    component: Paper
   }
 ]
 

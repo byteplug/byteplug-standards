@@ -1,17 +1,12 @@
 <template>
-  <main>
-    <div>Byteplug Standards</div>
-    <div v-if="$route.path === '/'">
-      <router-link to="/document-validator">Document Validator</router-link>
-      <br>
-      <router-link to="/endpoints">Endpoints</router-link>
-    </div>
-    <router-view v-else/>
-  </main>
+  <div class="min-vh-100 d-flex flex-column">
+    <router-view class="flex-grow-1"/>
+    <footer class="text-center py-3">© 2022 Byteplug Inc. All rights reserved.</footer>
+  </div>
 </template>
 
 <style>
-html, body, #app {
+html, body, #website{
   height: 100%;
 }
 

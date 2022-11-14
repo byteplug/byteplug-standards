@@ -1,0 +1,13 @@
+title: Task Tracker
+summary: |
+  Live and working micro-service showcasing the Endpoint standard. Equivalent 
+  of the Pet Store from OAS. It aims to be as simple as possible, yet showing 
+  every features of the standard, and an example for other developers.
+contact:
+  name: My Company
+  url: https://www.my-company.com/
+  email: contact@my-company.com
+license:
+  name: The Open Software License 3.0
+  url: https://opensource.org/licenses/OSL-3.0
+version: 1.0.0
